@@ -15,20 +15,19 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
-if (app.Environment.IsProduction())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
 
-//app.UseHttpsRedirection();
+app.UseHttpsRedirection();
 
-//app.UseAuthorization();
+// dev notes: Add below code after you get an error at app.MapContollers();
+// To enable end point routing
+app.UseRouting();
+
+app.UseAuthorization();
+app.UseEndpoints(endpoints =>
+{ 
+    endpoints.MapControllers();
+});
 
 //app.MapControllers();
-
-app.Run(async (context) => {
-    await context.Response.WriteAsync("Hello world");
-});
 
 app.Run();
