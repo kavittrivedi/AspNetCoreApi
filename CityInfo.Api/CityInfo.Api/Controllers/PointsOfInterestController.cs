@@ -1,6 +1,6 @@
 ﻿using CityInfo.Api.Models;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+
 
 namespace CityInfo.Api.Controllers
 {
@@ -88,6 +88,30 @@ namespace CityInfo.Api.Controllers
                                   finalPointOfInterest
                                 );
 
+        }
+
+        [HttpPut("{pointOfInteresetId}")] // For full update we use HttpPut attribute.
+        public ActionResult UpdatePointOfInterest(int cityId, int pointOfInteresetId,
+          [FromBody] PointOfInterestUpdateDto pointOfInterest)
+        {
+            var city = CitiesDataStore.Current.cities.FirstOrDefault(c => c.Id == cityId);
+
+            if (city == null)
+            {
+                return NotFound();
+            }
+
+            var pointOfInterestFromDataStore = city.PointsOfInterest.FirstOrDefault(c => c.Id == pointOfInteresetId);
+            
+            if (pointOfInterest == null)
+            {
+                return NotFound();
+            }
+
+            pointOfInterestFromDataStore.Name = pointOfInterest.Name;
+            pointOfInterestFromDataStore.Description = pointOfInterest.Description;
+
+            return NoContent();
         }
     }
 }
