@@ -52,6 +52,14 @@ namespace CityInfo.Api.Controllers
             int cityId,
             [FromBody] PointOfInterestForCreationDto pointOfInterest) // pointOfInterest is complete data type // [FromBody] is not compulsary, it is assumed that content will come from body.
         {
+            // Not needed because of [ApiController]
+            //if (!ModelState.IsValid)
+            //{
+            //    return BadRequest();
+            //}
+
+
+
             var city = CitiesDataStore.Current.cities.FirstOrDefault(c => c.Id == cityId);
             if (city == null)
             {
@@ -68,7 +76,7 @@ namespace CityInfo.Api.Controllers
                 Name = pointOfInterest.Name,
                 Description = pointOfInterest.Description,
             };
-            
+
             city.PointsOfInterest.Add(finalPointOfInterest);
 
             return CreatedAtRoute("GetPointofInterest",
