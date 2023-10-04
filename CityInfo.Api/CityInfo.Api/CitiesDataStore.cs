@@ -5,7 +5,9 @@ namespace CityInfo.Api
     public class CitiesDataStore
     {
         public List<CityDto> cities { get; set; }
-        public static CitiesDataStore Current { get; } = new CitiesDataStore();
+
+        // This static instance is noting more than singlton.
+        //public static CitiesDataStore Current { get; } = new CitiesDataStore();
         public CitiesDataStore()
         {
             cities = new List<CityDto>()

@@ -1,3 +1,4 @@
+using CityInfo.Api;
 using CityInfo.Api.Services;
 using Microsoft.AspNetCore.Mvc.Formatters;
 using Microsoft.AspNetCore.StaticFiles;
@@ -37,6 +38,7 @@ builder.Services.AddTransient<ILocalMailService, LocalMailService>(); // Now we 
 builder.Services.AddTransient<ILocalMailService,CloudMailService>(); // Now we know how to create custom service register and inject.
 #endif
 
+builder.Services.AddSingleton<CitiesDataStore>();
 
 var app = builder.Build();
 
