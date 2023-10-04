@@ -1,3 +1,4 @@
+using CityInfo.Api.Services;
 using Microsoft.AspNetCore.Mvc.Formatters;
 using Microsoft.AspNetCore.StaticFiles;
 using Serilog;
@@ -30,6 +31,7 @@ builder.Services.AddControllers(options=>
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddSingleton<FileExtensionContentTypeProvider>();
+builder.Services.AddTransient<LocalMailService>(); // Now we know how to create custom service register and inject.
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
