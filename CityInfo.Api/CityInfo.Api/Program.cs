@@ -1,9 +1,21 @@
 using Microsoft.AspNetCore.Mvc.Formatters;
 using Microsoft.AspNetCore.StaticFiles;
+using Serilog;
+
+// Tell serilog what to do
+Log.Logger = new LoggerConfiguration()
+    .MinimumLevel.Debug()
+    .WriteTo.Console()
+    .WriteTo.File("Logs/cityinfo.txt", rollingInterval: RollingInterval.Day)
+    .CreateLogger();
+
 
 var builder = WebApplication.CreateBuilder(args);
-builder.Logging.ClearProviders(); // clear console logger.
-builder.Logging.AddConsole(); // Add logs to console window.
+//builder.Logging.ClearProviders(); // clear console logger.
+//builder.Logging.AddConsole(); // Add logs to console window.
+
+// Tell aspnet core to use serilog instead of inbuilt logger.
+builder.Host.UseSerilog();
 // Add services to the container.
 
 builder.Services.AddControllers(options=>
@@ -11,6 +23,9 @@ builder.Services.AddControllers(options=>
     options.ReturnHttpNotAcceptable=true;
 }).AddNewtonsoftJson()
   .AddXmlDataContractSerializerFormatters(); // If you want output in xml.
+
+
+
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
