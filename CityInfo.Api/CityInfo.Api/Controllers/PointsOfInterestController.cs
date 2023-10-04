@@ -12,7 +12,7 @@ namespace CityInfo.Api.Controllers
         private readonly ILogger<PointsOfInterestController> _logger;
         public PointsOfInterestController(ILogger<PointsOfInterestController> logger)
         {
-            _logger=logger?? throw new ArgumentException(nameof(logger));
+            _logger = logger ?? throw new ArgumentException(nameof(logger));
         }
 
         [HttpGet]
@@ -37,22 +37,34 @@ namespace CityInfo.Api.Controllers
         public ActionResult<PointOfInterestDto> GetPointOfInterest(
             int cityId, int pointOfInterestId)
         {
-            var city = CitiesDataStore.Current.cities.FirstOrDefault(c => c.Id == cityId);
-            if (city == null)
+            try
             {
-                _logger.LogInformation($"City with id{cityId} wasn't found when accessing points of interest.");
-                return NotFound();
-            }
+                throw new Exception("Exception sample");
+                var city = CitiesDataStore.Current.cities.FirstOrDefault(c => c.Id == cityId);
+                if (city == null)
+                {
+                    _logger.LogInformation($"City with id{cityId} wasn't found when accessing points of interest.");
+                    return NotFound();
+                }
 
-            // Find point of interest
-            var pointOfInterest = city.PointsOfInterest
-            .FirstOrDefault(c => c.Id == pointOfInterestId);
-            if (pointOfInterest == null)
+                // Find point of interest
+                var pointOfInterest = city.PointsOfInterest
+                .FirstOrDefault(c => c.Id == pointOfInterestId);
+                if (pointOfInterest == null)
+                {
+                    return NotFound();
+                }
+
+                return Ok(pointOfInterest);
+            }
+            catch (Exception ex)
             {
-                return NotFound();
-            }
+                _logger.LogCritical(
+                    $"Exception while getting points of interest for city with id {cityId}",
+                    ex);
 
-            return Ok(pointOfInterest);
+                return StatusCode(500,"A problem happened while handling your request.");
+            }
         }
 
         [HttpPost]
@@ -155,7 +167,7 @@ namespace CityInfo.Api.Controllers
             }
 
             if (!TryValidateModel(pointOfInterestToPatch))
-            { 
+            {
                 return BadRequest(ModelState);
             }
 
@@ -166,7 +178,7 @@ namespace CityInfo.Api.Controllers
         }
 
         [HttpDelete("{pointOfInterestId}")]
-        public ActionResult DeletePointOfInterest(int cityId, int pointOfInterestId) 
+        public ActionResult DeletePointOfInterest(int cityId, int pointOfInterestId)
         {
             var city = CitiesDataStore.Current.cities
             .FirstOrDefault(c => c.Id == cityId);
@@ -185,7 +197,7 @@ namespace CityInfo.Api.Controllers
 
             city.PointsOfInterest.Remove(pointOfInterestFromStore);
 
-            return NoContent(); 
+            return NoContent();
         }
     }
 }
