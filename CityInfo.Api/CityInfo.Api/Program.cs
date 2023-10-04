@@ -19,9 +19,9 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Host.UseSerilog();
 // Add services to the container.
 
-builder.Services.AddControllers(options=>
-{ 
-    options.ReturnHttpNotAcceptable=true;
+builder.Services.AddControllers(options =>
+{
+    options.ReturnHttpNotAcceptable = true;
 }).AddNewtonsoftJson()
   .AddXmlDataContractSerializerFormatters(); // If you want output in xml.
 
@@ -31,7 +31,13 @@ builder.Services.AddControllers(options=>
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddSingleton<FileExtensionContentTypeProvider>();
-builder.Services.AddTransient<LocalMailService>(); // Now we know how to create custom service register and inject.
+#if DEBUG
+builder.Services.AddTransient<ILocalMailService, LocalMailService>(); // Now we know how to create custom service register and inject.
+#else
+builder.Services.AddTransient<ILocalMailService,CloudMailService>(); // Now we know how to create custom service register and inject.
+#endif
+
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -49,7 +55,7 @@ app.UseRouting();
 
 app.UseAuthorization();
 app.UseEndpoints(endpoints =>
-{ 
+{
     endpoints.MapControllers();
 });
 
