@@ -2,7 +2,8 @@ using Microsoft.AspNetCore.Mvc.Formatters;
 using Microsoft.AspNetCore.StaticFiles;
 
 var builder = WebApplication.CreateBuilder(args);
-
+builder.Logging.ClearProviders(); // clear console logger.
+builder.Logging.AddConsole(); // Add logs to console window.
 // Add services to the container.
 
 builder.Services.AddControllers(options=>
